@@ -7,9 +7,6 @@ const app = express();
 
 await app.use(express.json());
 
-app.get('/text', function (req, res) {
-    res.send('Hello World!'); // This will serve your request to '/'.
-  });
 app.use('/api/auth', authRouter);
 
 app.listen(process.env.PORT,()=>{
