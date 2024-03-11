@@ -36,14 +36,16 @@ export const createUser = async (req: Request<{}, {}, User>, res: Response) => {
 
         res.status(201).json({
             msg: 'User registered successfully',
-            nickname:nickname,
-            password:hashPassword
+            nickname: nickname,
+            password: hashPassword
         });
+
+        
     } catch (err) {
         console.log(err);
-        res.status(500).json({
-            err
-        });
+        return res.status(500).json({
+            msg: 'internal server error'
+        })
     } finally {
         await client.close();
     }
@@ -77,12 +79,15 @@ export const loginUser = async (req: Request<{}, {}, User>, res: Response) => {
         }
 
         res.json({
-            msg:'Login ok',
+            msg: 'Login ok',
             uid: user._id,
             name: user.nickname
         })
     } catch (err) {
         console.log(err);
+        return res.status(500).json({
+            msg: 'internal server error'
+        })
     } finally {
         await client.close();
     }
