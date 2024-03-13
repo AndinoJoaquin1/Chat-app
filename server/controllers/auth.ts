@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { genSaltSync, hashSync, compareSync } from 'bcrypt';
 
 import { User } from '../types';
-import { body } from 'express-validator';
+import generateJWT from '../helpers/jwt.ts';
 
 const uri = `${process.env.DB_URL}`;
 
@@ -17,9 +17,9 @@ export const createUser = async (req: Request<{}, {}, User>, res: Response) => {
         const db = client.db('Chat-app');
         const collection = db.collection('Users');
 
-        let user = await collection.findOne({ email });
+        const findUser = await collection.findOne({ email });
 
-        if (user) {
+        if (findUser) {
             return res.status(400).json({
                 msg: 'Email is already use'
             });
@@ -28,16 +28,19 @@ export const createUser = async (req: Request<{}, {}, User>, res: Response) => {
         const salt = genSaltSync();
         const hashPassword = hashSync(password, salt);
 
-        await collection.insertOne({
+        const insertUser = await collection.insertOne({
             nickname,
             email,
             password: hashPassword,
         });
 
+        const token = await generateJWT(insertUser.insertedId, nickname);
+
         res.status(201).json({
             msg: 'User registered successfully',
             nickname: nickname,
-            password: hashPassword
+            password: hashPassword,
+            token
         });
 
         
@@ -78,10 +81,13 @@ export const loginUser = async (req: Request<{}, {}, User>, res: Response) => {
             })
         }
 
+        const token = await generateJWT(user._id, nickname);
+
         res.json({
             msg: 'Login ok',
             uid: user._id,
-            name: user.nickname
+            name: user.nickname,
+            token
         })
     } catch (err) {
         console.log(err);
