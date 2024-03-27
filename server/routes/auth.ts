@@ -16,7 +16,7 @@ authRouter.post(
     createUser
 );
 
-authRouter.get("/login", 
+authRouter.post("/login", 
 [
     check("email", "Email is required").isEmail(),
     check("password", "Password is required").not().isEmpty(),
