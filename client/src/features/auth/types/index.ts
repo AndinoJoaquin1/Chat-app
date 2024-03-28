@@ -4,21 +4,21 @@ export type LayoutProps = {
 };
 
 export type User = {
-  _id: string,
-  nickname: string,
-  email: string,
-  password: string,
-  token: string
+  _id?: string,
+  nickname?: string,
+  email?: string,
+  password?: string,
+  token?: string
 }
 
 export type LoginCredential = {
   email: string,
-  password: string
-
+  password: string,
+  nickname?: string
 }
 
 export type AuthState = {
-  status: 'idle' | 'loading' | 'failed';
+  status: 'login' | 'loading' | 'failed';
   error: string | null;
   user: User|null;
 }

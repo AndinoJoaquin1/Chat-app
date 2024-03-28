@@ -4,7 +4,7 @@ import { LoginCredential, User } from "../types";
 import { AxiosResponse } from 'axios';
 
 
-const handleLogin = async ({email,password}: LoginCredential) => {
+const handleLogin = async ({email,password}: User) => {
     try {
         const {data} = await axios.post('/auth/login',  { email, password } );
         console.log(data);
@@ -15,4 +15,16 @@ const handleLogin = async ({email,password}: LoginCredential) => {
     }
 };
 
-export { handleLogin };
+const handleRegister = async ({email,password,nickname}: User) => {
+    try {
+        const {data} = await axios.post('/auth/register',  { email, password, nickname } );
+        console.log(data);
+        Cookies.set('token', data.token);
+        console.log(Cookies.get('token'));
+        return ({nickname: data.nickname,id: data.uid});
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export { handleLogin, handleRegister };

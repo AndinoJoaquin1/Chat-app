@@ -34,12 +34,15 @@ export const createUser = async (req: Request<{}, {}, User>, res: Response) => {
             password: hashPassword,
         });
 
+        console.log('id'+insertUser.insertedId);
+
         const token = await generateJWT(insertUser.insertedId, nickname);
 
         res.status(201).json({
             msg: 'User registered successfully',
-            nickname: nickname,
-            password: hashPassword,
+            uid: insertUser.insertedId,
+            nickname,
+            hashPassword,
             token
         });
 
